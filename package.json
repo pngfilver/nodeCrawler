@@ -1,0 +1,18 @@
+{
+  "name": "node-crawler",
+  "version": "1.0.0",
+  "description": "a simple node crawler project",
+  "author": "pngfilver",
+  "license": "MIT",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true
+  },
+  "dependencies": {
+    "cheerio": "0.20.0"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
