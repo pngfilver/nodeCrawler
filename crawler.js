@@ -11,22 +11,57 @@ function filterBlogs(html) {
     const $ = cheerio.load(html);
     const categories = $('qchunk');
 
+   /* categoriesData: [
+        {
+            categoryTitle: '',
+            movies: [
+                {
+                    title: '',
+                    score: ''
+                },
+                {
+                    title: '',
+                    score: ''
+                }
+            ]
+        }
+    ]*/
+
+    var categoriesData = [];
+
     categories.each(function(item){
         var category = $(this);
         var categoryTitle = category.find('strong.title').find('span').text();
-        console.log('\n'+categoryTitle+'\n');
-
-        var videos = category.find('.site-piclist').children();
-        videos.each(function(item) {
-            var video = $(this);
-            var title = video.find('.site-piclist_info_title').find('a').text();
-            console.log(title);
-            var score = video.find('.score').text();
-            if(score) {
-                console.log('评分:'+score + '\n');
-            }
+        var movies = category.find('.site-piclist').children();
+        var categoryData = {
+            categoryTitle: categoryTitle,
+            movies: []
+        };
+        movies.each(function(item) {
+            var movie = $(this);
+            var title = movie.find('.site-piclist_info_title').find('a').text();
+            var score = movie.find('.score').text();
+            categoryData.movies.push({
+                title: title,
+                score: score
+            });
         });
+        categoriesData.push(categoryData);
+    });
+    return categoriesData;
+}
 
+function printData(categoriesData) {
+    var categoriesData = categoriesData;
+    categoriesData.forEach(function(item) {
+        var categoryTitle = item.categoryTitle;
+        console.log('\n'+categoryTitle+'\n');
+        var movies = item.movies;
+        movies.forEach(function(movie) {
+            var title = movie.title;
+            var score = movie.score;
+            console.log(title+'  '+score);
+        });
     });
 }
 
@@ -37,7 +72,8 @@ http.get(url, (res) => {
         html += data;
     });
     res.on('end', () => {
-        filterBlogs(html);
+        var categoriesData = filterBlogs(html);
+        printData(categoriesData);
     });
 
 }).on('error', (e) => {
